@@ -21,7 +21,8 @@ routerContact.post(
     try {
       // Check if Request is already made
       console.log(req.body);
-      let user = Contact.findOne({ email: req.body.email });
+      let user = await Contact.findOne({ email: req.body.email });
+
       if (user) {
         return res
           .status(400)
