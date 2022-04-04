@@ -29,6 +29,7 @@ app.use(express.json());
 
 // Available Routes
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/form', require('./routes/contact'));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
