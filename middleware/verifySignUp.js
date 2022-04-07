@@ -6,7 +6,7 @@ const TempData = db.tempData;
 const Blacklist = db.blacklist;
 const Volunteer = db.volunteer;
 
-checkDuplicateEmail = async (req, res, next) => {
+checkDuplicateEmail = (req, res, next) => {
   // Check for Email in Blacklist
   Blacklist.findOne({ email: req.body.email }).exec((err, user) => {
     // If there is any Error present
@@ -73,3 +73,4 @@ const verifySignUp = {
   checkDuplicateEmail,
   checkRoleExisted,
 };
+module.exports = verifySignUp;

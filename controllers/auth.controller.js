@@ -6,25 +6,30 @@ const Volunteer = db.volunteer;
 const Role = db.role;
 
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // It will Verify Using VerifySignup middleware
 exports.register = (req, res) => {
+  console.log(req.body);
+  let key = req.body.name + req.body.mobile;
   const user = new TempData({
     name: req.body.name,
     email: req.body.email,
-    password: bcrypt.hashSync(req.body.password, 10),
+    password: bcrypt.hashSync(req.body.password, 8),
     country: req.body.country,
     state: req.body.state,
     city: req.body.city,
     address: req.body.address,
+    pincode: req.body.pincode,
     mobile: req.body.mobile,
+    uniqueKey: key,
   });
   user.save((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
+    // If Req.body has Role Specified for User
     if (req.body.roles) {
       Role.find(
         {
@@ -33,6 +38,7 @@ exports.register = (req, res) => {
         (err, roles) => {
           if (err) {
             res.status(500).send({ message: err });
+            return;
           }
           user.roles = roles.map((role) => role._id);
           user.save((err) => {
@@ -40,11 +46,13 @@ exports.register = (req, res) => {
               res.status(500).send({ message: err });
               return;
             }
-            res.send({ message: 'User was registered successfully!' });
+            res.send({ message: 'User was registered successfully! Line 48' });
           });
         }
       );
-    } else {
+    }
+    // Default Role for New User : USER
+    else {
       Role.findOne({ name: 'user' }, (err, role) => {
         if (err) {
           res.status(500).send({ message: err });
@@ -56,7 +64,7 @@ exports.register = (req, res) => {
             res.status(500).send({ message: err });
             return;
           }
-          res.send({ message: 'User was registered successfully!' });
+          res.send({ message: 'User was registered successfully! ROLE:USER' });
         });
       });
     }
@@ -64,34 +72,38 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  // Check in Blacklist
-  Blacklist.findOne({ email: req.body.email })
-    .populate('roles', '-__v')
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      if (user) {
-        res
-          .status(400)
-          .send({ message: 'You have been Blacklisted.Login Component' });
-      }
-    });
-  TempData.findOne({ email: req.body.email })
-    .populate('roles', '-__v')
-    .exec((err, user) => {
-      if (err) {
-        res.status(500).send({ message: err });
-        return;
-      }
-      if (user) {
-        res
-          .status(400)
-          .send({ message: 'Your Request is Under Process.Login Component' });
-      }
-    });
-  Volunteer.findOne({
+  // // Check in Blacklist
+  // Blacklist.findOne({ email: req.body.email })
+  //   .populate('roles', '-__v')
+  //   .exec((err, user) => {
+  //     if (err) {
+  //       res.status(500).send({ message: err });
+  //       return;
+  //     }
+  //     if (user) {
+  //       res
+  //         .status(400)
+  //         .send({ message: 'You have been Blacklisted.Login Component' });
+  //       return;
+  //     }
+  //   });
+
+  // TempData.findOne({ email: req.body.email })
+  //   .populate('roles', '-__v')
+  //   .exec((err, user) => {
+  //     if (err) {
+  //       res.status(500).send({ message: err });
+  //       return;
+  //     }
+  //     if (user) {
+  //       res
+  //         .status(400)
+  //         .send({ message: 'Your Request is Under Process.Login Component' });
+  //       return;
+  //     }
+  //   });
+
+  TempData.findOne({
     email: req.body.email,
   })
     .populate('roles', '-__v')
@@ -101,9 +113,8 @@ exports.login = (req, res) => {
         return;
       }
       if (!user) {
-        return res
-          .status(404)
-          .send({ message: 'Invalid Details.Login Component' });
+        res.status(404).send({ message: 'Invalid Details.Login Component' });
+        return;
       }
       let passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -115,7 +126,7 @@ exports.login = (req, res) => {
           message: 'Invalid PASSWORD or Email!',
         });
       }
-      let token = jwt.sign({ id: user._id }, config.secret, {
+      let token = jwt.sign({ id: user.id }, config.secret, {
         expiresIn: 86400, // 24 hours
       });
       let authorities = [];

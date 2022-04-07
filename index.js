@@ -35,6 +35,22 @@ mongoose
     console.error('Error connecting to mongo', err);
   });
 
+// // Available Routes
+// app.use('/api/auth', require('./routes/auth'));
+// app.use('/api/form', require('./routes/contact'));
+require('./routes/auth.route')(app);
+require('./routes/user.route')(app);
+// Simple Route for Checking
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello World!' });
+});
+
+const PORT = 5000 || process.env.PORT;
+
+app.listen(PORT, () => {
+  console.log(`Server is Running at port ${PORT}`);
+});
+
 // Initial Function
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
@@ -61,18 +77,4 @@ function initial() {
     }
   });
 }
-
-// Available Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/form', require('./routes/contact'));
-
-// Simple Route for Checking
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
-});
-
-const PORT = 5000 || process.env.PORT;
-
-app.listen(PORT, () => {
-  console.log(`Server is Running at port ${PORT}`);
-});
+initial();
