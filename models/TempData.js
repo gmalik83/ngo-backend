@@ -1,7 +1,9 @@
+// User.modal.js File
+
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const UserSchema = new Schema({
+const TempSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -43,5 +45,15 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  uniqueKey: {
+    type: String,
+    required: true,
+  },
+  roles: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Role',
+    },
+  ],
 });
-module.exports = mongoose.model('user', UserSchema);
+module.exports = mongoose.model('tempdata', TempSchema);
