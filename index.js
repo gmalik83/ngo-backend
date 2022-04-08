@@ -1,17 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-
+const mongoose = require('mongoose');
 const app = express();
 
-const db = require('./models');
+const db = require('./models/index');
+// For Role Model
 const Role = db.role;
 
 // For Usuage of dot-env files
 require('dotenv').config();
-
-// Make Database Configuration
-const mongoose = require('mongoose');
-const uri = process.env.MONGO_URI;
 
 //Middlewares
 
@@ -21,6 +18,8 @@ app.use(cors());
 app.use(express.json());
 // Parse Request of Content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
+// Taking URI for Database Connection From ENV file
+const uri = process.env.MONGO_URI;
 mongoose
   .connect(uri, {
     useNewUrlParser: true,
@@ -30,28 +29,31 @@ mongoose
     console.log(
       `Connected to Mongo! Database name: "${x.connections[0].name}"`
     );
+    initial();
   })
   .catch((err) => {
     console.error('Error connecting to mongo', err);
   });
+
+// Route for Checking Connection
+app.get('/', (req, res) => {
+  res.json({ message: 'Application successfully running' });
+});
 
 // // Available Routes
 // app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/form', require('./routes/contact'));
 require('./routes/auth.route')(app);
 require('./routes/user.route')(app);
-// Simple Route for Checking
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
-});
 
-const PORT = 5000 || process.env.PORT;
+// set PORT to run application
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`Server is Running at port ${PORT}`);
 });
 
-// Initial Function
+// Initial Function : Adding Role in Role.model if it is empty
 function initial() {
   Role.estimatedDocumentCount((err, count) => {
     if (!err && count == 0) {
@@ -77,4 +79,3 @@ function initial() {
     }
   });
 }
-initial();
