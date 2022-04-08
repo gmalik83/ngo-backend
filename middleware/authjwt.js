@@ -2,15 +2,20 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 const db = require('../models/index');
 const TempData = db.tempData;
-const Blacklist = db.blacklist;
-const Volunteer = db.volunteer;
+// const Blacklist = db.blacklist;
+// const Volunteer = db.volunteer;
 const Role = db.role;
+
 verifyToken = (req, res, next) => {
   let token = req.headers['x-access-token'];
+  // If There is no Token Present
   if (!token) {
     return res.status(403).send({ message: 'No token provided!' });
   }
+  // If Token is present , Verify It
+
   jwt.verify(token, config.secret, (err, decoded) => {
+    // Error in Decoding
     if (err) {
       return res.status(401).send({ message: 'Unauthorized!' });
     }
@@ -19,11 +24,12 @@ verifyToken = (req, res, next) => {
   });
 };
 isAdmin = (req, res, next) => {
-  Volunteer.findById(req.userId).exec((err, user) => {
+  TempData.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
+    // Find in Roles
     Role.find(
       {
         _id: { $in: user.roles },
@@ -46,7 +52,7 @@ isAdmin = (req, res, next) => {
   });
 };
 isModerator = (req, res, next) => {
-  Volunteer.findById(req.userId).exec((err, user) => {
+  TempData.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
