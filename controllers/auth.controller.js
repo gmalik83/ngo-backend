@@ -1,8 +1,10 @@
 const config = require('../config/auth.config');
 const db = require('../models/index');
-const Blacklist = db.blacklist;
+// Models Schema for databases
+// const Blacklist = db.blacklist;
 const TempData = db.tempData;
-const Volunteer = db.volunteer;
+// const Volunteer = db.volunteer;
+// For Role.Model
 const Role = db.role;
 
 const jwt = require('jsonwebtoken');
@@ -24,6 +26,7 @@ exports.register = (req, res) => {
     mobile: req.body.mobile,
     uniqueKey: key,
   });
+
   user.save((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
@@ -113,8 +116,10 @@ exports.login = (req, res) => {
         return;
       }
       if (!user) {
-        res.status(404).send({ message: 'Invalid Details.Login Component' });
-        return;
+        return res.status(404).send({
+          message:
+            'Invalid Details .Login Component.User Not found in TempData',
+        });
       }
       let passwordIsValid = bcrypt.compareSync(
         req.body.password,
@@ -126,7 +131,8 @@ exports.login = (req, res) => {
           message: 'Invalid PASSWORD or Email!',
         });
       }
-      let token = jwt.sign({ id: user.id }, config.secret, {
+      // Sign Token for returning to user
+      let token = jwt.sign({ id: user._id }, config.secret, {
         expiresIn: 86400, // 24 hours
       });
       let authorities = [];
@@ -137,6 +143,10 @@ exports.login = (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        address: user.address,
+        country: user.country,
+        state: user.state,
+        city: user.city,
         roles: authorities,
         accessToken: token,
       });
