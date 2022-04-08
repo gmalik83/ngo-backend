@@ -9,6 +9,35 @@ const BlacklistSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  pincode: {
+    type: String,
+    required: true,
   },
   mobile: {
     type: String,
@@ -17,7 +46,6 @@ const BlacklistSchema = new Schema({
   uniqueKey: {
     type: String,
     required: true,
-    unique: true,
   },
   roles: [
     {
