@@ -1,9 +1,10 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
+const { volunteer } = require('../models/index');
 const db = require('../models/index');
 const TempData = db.tempData;
 // const Blacklist = db.blacklist;
-// const Volunteer = db.volunteer;
+const Volunteer = db.volunteer;
 const Role = db.role;
 
 verifyToken = (req, res, next) => {
@@ -24,7 +25,8 @@ verifyToken = (req, res, next) => {
   });
 };
 isAdmin = (req, res, next) => {
-  TempData.findById(req.userId).exec((err, user) => {
+  console.log(req.userId);
+  volunteer.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
@@ -52,7 +54,8 @@ isAdmin = (req, res, next) => {
   });
 };
 isModerator = (req, res, next) => {
-  TempData.findById(req.userId).exec((err, user) => {
+  console.log(req.userId);
+  Volunteer.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;

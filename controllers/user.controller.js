@@ -50,6 +50,7 @@ exports.userBoard = (req, res) => {
 };
 */
 exports.adminBoard = (req, res) => {
+  // Check if Admin
   TempData.find({})
     .select('-password')
     .exec((err, user) => {
@@ -58,6 +59,7 @@ exports.adminBoard = (req, res) => {
       }
       res.send(user);
     });
+  // res.send('ADmin Board');
 };
 exports.moderatorBoard = (req, res) => {
   TempData.find({})
