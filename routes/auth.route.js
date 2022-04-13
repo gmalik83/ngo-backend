@@ -1,5 +1,6 @@
 const verifySignUp = require('../middleware/verifySignUp');
 const controller = require('../controllers/auth.controller');
+const verifyLogin = require('../middleware/verifyLogin');
 module.exports = function (app) {
   app.use(function (req, res, next) {
     res.header(
@@ -10,8 +11,17 @@ module.exports = function (app) {
   });
   app.post(
     '/api/auth/register',
-    [verifySignUp.checkDuplicateEmail, verifySignUp.checkRoleExisted],
+    [
+      verifySignUp.checkEmailBlacklist,
+      verifySignUp.checkEmailVolunteer,
+      verifySignUp.checkDuplicateEmail,
+      verifySignUp.checkRoleExisted,
+    ],
     controller.register
   );
-  app.post('/api/auth/login', controller.login);
+  app.post(
+    '/api/auth/login',
+    [verifyLogin.checkEmailBlacklist, verifyLogin.checkEmailTempData],
+    controller.login
+  );
 };

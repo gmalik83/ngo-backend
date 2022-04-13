@@ -3,7 +3,9 @@ const db = require('../models/index');
 // Models Schema for databases
 // const Blacklist = db.blacklist;
 const TempData = db.tempData;
+// const Blacklist = db.blacklist;
 // const Volunteer = db.volunteer;
+const Volunteer = db.volunteer;
 // For Role.Model
 const Role = db.role;
 
@@ -106,7 +108,7 @@ exports.login = (req, res) => {
   //     }
   //   });
 
-  TempData.findOne({
+  Volunteer.findOne({
     email: req.body.email,
   })
     .populate('roles', '-__v')
@@ -118,7 +120,7 @@ exports.login = (req, res) => {
       if (!user) {
         return res.status(404).send({
           message:
-            'Invalid Details .Login Component.User Not found in TempData',
+            'Invalid Details .Login Component.User Not found in Volunteer',
         });
       }
       let passwordIsValid = bcrypt.compareSync(

@@ -3,8 +3,42 @@
 const db = require('../models/index');
 const ROLES = db.ROLES;
 const TempData = db.tempData;
+const Blacklist = db.blacklist;
+const Volunteer = db.volunteer;
 // const Blacklist = db.blacklist;
 // const Volunteer = db.volunteer;
+checkEmailBlacklist = (req, res, next) => {
+  Blacklist.findOne({ email: req.body.email }).exec((err, user) => {
+    // If any Error Present
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    // If User Exist in Blacklist Database
+    if (user) {
+      res
+        .status(400)
+        .send({ message: 'You have been blacklisted. VerifySignUp' });
+      return;
+    }
+    next();
+  });
+};
+checkEmailVolunteer = (req, res, next) => {
+  Volunteer.findOne({ email: req.body.email }).exec((err, user) => {
+    // If Any Error Present
+    if (err) {
+      res.status(500).send({ message: err });
+      return;
+    }
+    // If User Exist in Databse
+    if (user) {
+      res.status(400).send({ message: 'You are already a Volunteer' });
+      return;
+    }
+    next();
+  });
+};
 
 checkDuplicateEmail = (req, res, next) => {
   // Check for Email in Blacklist
@@ -70,6 +104,8 @@ checkRoleExisted = (req, res, next) => {
 };
 
 const verifySignUp = {
+  checkEmailBlacklist,
+  checkEmailVolunteer,
   checkDuplicateEmail,
   checkRoleExisted,
 };
