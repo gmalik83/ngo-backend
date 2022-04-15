@@ -2,7 +2,29 @@ const Blacklist = require('../models/Blacklist');
 const db = require('../models/index');
 const { create } = require('../models/TempData');
 const TempData = require('../models/TempData');
+const temp = db.tempData;
 const Volunteer = db.volunteer;
+exports.getUser = async(req,res)=>{
+  const id = req.query.id;
+
+  try{
+    const user = await temp.findOne({_id:id}).select('-password');
+    if(user)
+    {
+      res.status(200).send(user);
+    }
+    else res.status(404).send({message:"Not Found"});
+
+  }catch(err){
+    res.send({status : 'error', error : err});
+  }
+
+}
+exports.approveUser = async (req,res)=>{
+  const id = req.query.id;
+  res.send(`Getting Request to approve ${id}`);
+}
+
 exports.allAccess = (req, res) => {
   res.status(200).send('Public Content');
 };

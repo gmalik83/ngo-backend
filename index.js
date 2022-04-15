@@ -46,6 +46,7 @@ app.get('/', (req, res) => {
 require('./routes/auth.route')(app);
 require('./routes/user.route')(app);
 
+
 // set PORT to run application
 const PORT = process.env.PORT || 5000;
 

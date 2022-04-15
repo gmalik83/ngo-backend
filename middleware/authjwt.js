@@ -54,7 +54,7 @@ isAdmin = (req, res, next) => {
   });
 };
 isModerator = (req, res, next) => {
-  console.log(req.userId);
+  // console.log(req.userId);
   Volunteer.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });

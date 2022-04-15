@@ -107,6 +107,7 @@ exports.login = (req, res) => {
   //       return;
   //     }
   //   });
+  console.log(req.body);
 
   Volunteer.findOne({
     email: req.body.email,
@@ -114,6 +115,7 @@ exports.login = (req, res) => {
     .populate('roles', '-__v')
     .exec((err, user) => {
       if (err) {
+        console.log(err);
         res.status(500).send({ message: err });
         return;
       }
