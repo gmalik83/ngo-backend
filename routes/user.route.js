@@ -25,6 +25,7 @@ module.exports = function (app) {
 
     controller.approveUser
   );
+  app.post("/api/deleteUser", controller.deleteUser);
   app.get(
     "/api/test/admin",
     [authJwt.verifyToken, authJwt.isAdmin],

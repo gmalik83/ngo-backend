@@ -4,10 +4,11 @@ const { create } = require("../models/TempData");
 const TempData = require("../models/TempData");
 const temp = db.tempData;
 const Volunteer = db.volunteer;
+const blacklist = db.blacklist;
 
 // For Getting User Details in MODAL
 exports.getUser = async (req, res) => {
-  const id =req.query.id;
+  const id = req.query.id;
 
   try {
     const user = await temp.findOne({ _id: id }).select("-password");
@@ -15,15 +16,19 @@ exports.getUser = async (req, res) => {
       res.status(200).send(user);
       return;
     } else {
-      res.status(404).send({ message: "Not Found" });
+      res
+        .status(404)
+        .send({ message: "Not Found.No Such User Request Pending" });
       return;
     }
   } catch (err) {
     res.status(500).send({ status: "error", error: err });
   }
+  // Working Great and Tested for Error/Response
 };
 // For Approving User
 exports.approveUser = async (req, res) => {
+  // Get _id of User to be approved
   const id = req.query.id;
   // Find User in TempData
 
@@ -31,6 +36,7 @@ exports.approveUser = async (req, res) => {
     const user = await temp.findById(id).select("-__v").exec();
     // If User is not Found
     if (!user) {
+      // Send error Message
       res.status(404).send({ message: "No Such User Exist. Line  26" });
       return;
     }
@@ -48,45 +54,93 @@ exports.approveUser = async (req, res) => {
       uniqueKey: user.uniqueKey,
       roles: [user.roles],
     });
-    // Save NewUser to Volunteer Collection
+    // Save NewUser to Volunteer (Approved) Collection
     newUser.save((err, check) => {
+      // If Some Error Exists
       if (err) {
         res.status(500).send({ message: err });
         return;
       }
-      console.log(check);
+      // console.log(check);
     });
 
     // Delete User From tempCollection
-    temp.deleteOne({ _id: id }, (err, res) => {
+    temp.deleteOne({ _id: id }, (err, resp) => {
       if (err) {
+        res.status(500).send({ message: err });
         console.log(err);
+        return;
       }
-      console.log(res);
+      if (resp.deletedCount === 1) {
+        res.status(200).send({ message: "Successfully Approved User" });
+        return;
+      } else {
+        res.status(500).send({ message: "Looks Like we Hit A Snag!" });
+        return;
+      }
     });
-
-    res.send("This is Good");
   } catch (err) {
     console.log(err);
+    res.status(500).send({ message: err });
   }
+};
+// For Deleting User
+exports.deleteUser = async (req, res) => {
+  // Get _id of User to be approved
+  const id = req.query.id;
+  // Find User in TempData
 
-  /*
-  // Send in Volunteer 
-  Volunteer.create(user,(err,pass)=>{
-    if(err)
-    console.log(err);
-    res.send(pass);
-    return ;
-  })
-  // Delete from Temp Data
-  temp.deleteOne({_id:id},(err,msg)=>{
-    if(err)
-    console.log(err);
-    res.send(msg);
-    return;
-  })
+  try {
+    const user = await temp.findById(id).select("-__v").exec();
+    // If User is not Found
+    if (!user) {
+      // Send error Message
+      res.status(404).send({ message: "No Such User Exist. Line  26" });
+      return;
+    }
+    // Create New User in Volunteer with same User Details
+    const newUser = new blacklist({
+      name: user.name,
+      email: user.email,
+      password: user.password,
+      country: user.country,
+      state: user.state,
+      city: user.city,
+      address: user.address,
+      pincode: user.pincode,
+      mobile: user.mobile,
+      uniqueKey: user.uniqueKey,
+      roles: [user.roles],
+    });
+    // Save NewUser to Volunteer (Approved) Collection
+    newUser.save((err, check) => {
+      // If Some Error Exists
+      if (err) {
+        res.status(500).send({ message: err });
+        return;
+      }
+      // console.log(check);
+    });
 
-  res.send("Ok"); */
+    // Delete User From tempCollection
+    temp.deleteOne({ _id: id }, (err, resp) => {
+      if (err) {
+        res.status(500).send({ message: err });
+        console.log(err);
+        return;
+      }
+      if (resp.deletedCount === 1) {
+        res.status(200).send({ message: "User Request is Rejected." });
+        return;
+      } else {
+        res.status(500).send({ message: "Looks Like we Hit A Snag!" });
+        return;
+      }
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: err });
+  }
 };
 
 exports.allAccess = (req, res) => {
