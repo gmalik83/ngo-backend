@@ -8,8 +8,10 @@ const Volunteer = db.volunteer;
 const Role = db.role;
 
 verifyToken = (req, res, next) => {
+  // console.log("Request Received to Verify JWT")
   let token = req.headers['x-access-token'];
   // If There is no Token Present
+  // console.log(token);
   if (!token) {
     return res.status(403).send({ message: 'No token provided!' });
   }
