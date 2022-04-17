@@ -1,6 +1,7 @@
 // Check if User Already in Blacklist or TempData or Volunteer
 // Check if Role is Legal or Not
 const db = require('../models/index');
+// ROLES array : user,admin,moderator
 const ROLES = db.ROLES;
 const TempData = db.tempData;
 const Blacklist = db.blacklist;
@@ -41,21 +42,7 @@ checkEmailVolunteer = (req, res, next) => {
 };
 
 checkDuplicateEmail = (req, res, next) => {
-  // Check for Email in Blacklist
-  /*Blacklist.findOne({ email: req.body.email }).exec((err, user) => {
-    // If there is any Error present
-    if (err) {
-      res.status(500).send({ message: err });
-      return;
-    }
-    // If User Exists
-    if (user) {
-      res.status(400).send({ message: 'You have been Blacklisted.' });
-      return;
-    }
-    */
 
-  // Check for Email in TempData
   TempData.findOne({ email: req.body.email }).exec((err, user) => {
     // If Any Error Present
     if (err) {
@@ -68,20 +55,7 @@ checkDuplicateEmail = (req, res, next) => {
       return;
     }
 
-    /*  // Check for EMail in Volunteer Database
-      Volunteer.findOne({ email: req.body.email }).exec((err, user) => {
-        // If There is Error Present
-        if (err) {
-          res.status(500).send({ message: err });
-          return;
-        }
-
-        // If User Exists in Final Database
-        if (user) {
-          res.status(400).send({ message: 'Already Registered' });
-          return;
-        }
-        */
+    
 
     next();
   });

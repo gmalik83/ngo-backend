@@ -77,36 +77,7 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  // // Check in Blacklist
-  // Blacklist.findOne({ email: req.body.email })
-  //   .populate('roles', '-__v')
-  //   .exec((err, user) => {
-  //     if (err) {
-  //       res.status(500).send({ message: err });
-  //       return;
-  //     }
-  //     if (user) {
-  //       res
-  //         .status(400)
-  //         .send({ message: 'You have been Blacklisted.Login Component' });
-  //       return;
-  //     }
-  //   });
 
-  // TempData.findOne({ email: req.body.email })
-  //   .populate('roles', '-__v')
-  //   .exec((err, user) => {
-  //     if (err) {
-  //       res.status(500).send({ message: err });
-  //       return;
-  //     }
-  //     if (user) {
-  //       res
-  //         .status(400)
-  //         .send({ message: 'Your Request is Under Process.Login Component' });
-  //       return;
-  //     }
-  //   });
   console.log(req.body);
 
   Volunteer.findOne({

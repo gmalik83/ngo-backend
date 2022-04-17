@@ -197,6 +197,7 @@ exports.adminBoard = (req, res) => {
       if (err) {
         res.status(401).send({ message: err });
       }
+      // Send TempData all documents
       res.send(user);
     });
   // res.send('ADmin Board');
@@ -208,6 +209,7 @@ exports.moderatorBoard = (req, res) => {
       if (err) {
         res.status(401).send({ message: err });
       }
+      // send array of all documents of TempData
       res.send(user);
     });
 };

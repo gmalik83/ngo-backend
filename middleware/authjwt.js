@@ -11,7 +11,6 @@ verifyToken = (req, res, next) => {
   // console.log("Request Received to Verify JWT")
   let token = req.headers['x-access-token'];
   // If There is no Token Present
-  // console.log(token);
   if (!token) {
     return res.status(403).send({ message: 'No token provided!' });
   }
@@ -27,13 +26,13 @@ verifyToken = (req, res, next) => {
   });
 };
 isAdmin = (req, res, next) => {
-  console.log(req.userId);
+  // console.log(req.userId);
   volunteer.findById(req.userId).exec((err, user) => {
     if (err) {
       res.status(500).send({ message: err });
       return;
     }
-    // Find in Roles
+    // Find in Roles : returns an array =>user.roles
     Role.find(
       {
         _id: { $in: user.roles },
