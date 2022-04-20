@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
-const { volunteer } = require('../models/index');
+// const { volunteer } = require('../models/index');
 const db = require('../models/index');
-const TempData = db.tempData;
+// const TempData = db.tempData;
 // const Blacklist = db.blacklist;
-const Volunteer = db.volunteer;
-const Role = db.role;
+// const Volunteer = db.volunteer;
+// const Role = db.role;
 
 verifyToken = (req, res, next) => {
   // console.log("Request Received to Verify JWT")
@@ -25,6 +25,7 @@ verifyToken = (req, res, next) => {
     next();
   });
 };
+/*
 isAdmin = (req, res, next) => {
   // console.log(req.userId);
   volunteer.findById(req.userId).exec((err, user) => {
@@ -81,10 +82,8 @@ isModerator = (req, res, next) => {
       }
     );
   });
-};
+};*/
 const authJwt = {
   verifyToken,
-  isAdmin,
-  isModerator,
 };
 module.exports = authJwt;

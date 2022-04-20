@@ -21,7 +21,7 @@ module.exports = function (app) {
   );
   app.post(
     '/api/auth/login',
-    [verifyLogin.checkEmailBlacklist, verifyLogin.checkEmailTempData],
+    [verifyLogin.checkEmailBlacklist, verifyLogin.checkEmailVolunteer],
     controller.login
   );
 };

@@ -1,23 +1,42 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const VolunteerSchema = new Schema({
-  name: {
+  firstName: {
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
+  lastName: {
     type: String,
     required: true,
   },
-  date: {
-    type: Date,
-    default: Date.now,
+  age: {
+    type: Number,
+    required: true,
+  },
+  father: {
+    type: String,
+    required: true,
+  },
+  mother: {
+    type: String,
+    required: true,
+  },
+  village: {
+    type: String,
+    required: true,
+  },
+  postoffice: {
+    type: String,
+    required: true,
+  },
+  block: {
+    type: String,
+    required: true,
+  },
+  tehsil: {
+    type: String,
+    required: true,
   },
   country: {
     type: String,
@@ -27,17 +46,46 @@ const VolunteerSchema = new Schema({
     type: String,
     required: true,
   },
-  city: {
-    type: String,
-    required: true,
-  },
-  address: {
+  district: {
     type: String,
     required: true,
   },
   pincode: {
     type: String,
     required: true,
+  },
+  special: String,
+  graduation: String,
+  xii: String,
+  skill: String,
+  profession: String,
+
+  email: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
+
+  address1: {
+    type: String,
+    required: true,
+  },
+  approved: {
+    type: Boolean,
+    default: false,
+  },
+  level: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 6,
   },
   mobile: {
     type: String,
@@ -46,12 +94,7 @@ const VolunteerSchema = new Schema({
   uniqueKey: {
     type: String,
     required: true,
+    unique: true,
   },
-  roles: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Role',
-    },
-  ],
 });
-module.exports = mongoose.model('volunteers', VolunteerSchema);
+module.exports = mongoose.model("volunteers", VolunteerSchema);

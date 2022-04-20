@@ -1,8 +1,9 @@
 const bcrypt = require('bcryptjs');
 const db = require('../models/index');
 const verifySignUp = require('./verifySignUp');
-const TempData = db.tempData;
+// const TempData = db.tempData;
 const Blacklist = db.blacklist;
+const Volunteer = db.volunteer;
 
 checkEmailBlacklist = (req, res, next) => {
   Blacklist.findOne({ email: req.body.email }).exec((err, user) => {
@@ -35,8 +36,8 @@ checkEmailBlacklist = (req, res, next) => {
     next();
   });
 };
-checkEmailTempData = (req, res, next) => {
-  TempData.findOne({ email: req.body.email }).exec((err, user) => {
+checkEmailVolunteer = (req, res, next) => {
+  Volunteer.findOne({ email: req.body.email , approved:false}).exec((err, user) => {
     // If there are any Errors
     if (err) {
       res.status(500).send({ message: err });
@@ -62,6 +63,7 @@ checkEmailTempData = (req, res, next) => {
 };
 const verifyLogin = {
   checkEmailBlacklist,
-  checkEmailTempData,
+  checkEmailVolunteer,
 };
 module.exports = verifyLogin;
+ 

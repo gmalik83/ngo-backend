@@ -3,7 +3,6 @@
 const db = require('../models/index');
 // ROLES array : user,admin,moderator
 const ROLES = db.ROLES;
-const TempData = db.tempData;
 const Blacklist = db.blacklist;
 const Volunteer = db.volunteer;
 // const Blacklist = db.blacklist;
@@ -26,7 +25,7 @@ checkEmailBlacklist = (req, res, next) => {
   });
 };
 checkEmailVolunteer = (req, res, next) => {
-  Volunteer.findOne({ email: req.body.email }).exec((err, user) => {
+  Volunteer.findOne({ email: req.body.email , approved:true}).exec((err, user) => {
     // If Any Error Present
     if (err) {
       res.status(500).send({ message: err });
@@ -43,7 +42,7 @@ checkEmailVolunteer = (req, res, next) => {
 
 checkDuplicateEmail = (req, res, next) => {
 
-  TempData.findOne({ email: req.body.email }).exec((err, user) => {
+  Volunteer.findOne({ email: req.body.email,approved:false }).exec((err, user) => {
     // If Any Error Present
     if (err) {
       res.status(500).send({ message: err });
