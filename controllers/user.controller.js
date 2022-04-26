@@ -117,7 +117,7 @@ exports.deleteUser = async (req, res) => {
     const newUser = new blacklist({
       uniqueKey: user.uniqueKey,
       email: user.email,
-      password: user.password
+      password: user.password,
     });
     // Save NewUser to Volunteer (Approved) Collection
     newUser.save((err, check) => {
@@ -229,7 +229,17 @@ exports.apiUpdate = (req, res) => {
               // console.log(err);
             } else {
               // console.log(docs);
-              return res.status(200).send({ message: docs.level });
+              const arr = [
+                "USER",
+                "Admin",
+                "State_Coordinator",
+                "District_Coordinator",
+                "Tehsil_Coordinator",
+                "Block_Coordinator",
+                "Village_Coordinator",
+              ];
+              const msg = `User is Changed to ` + `${arr[docs.level]}`;
+              return res.status(200).send({ message:msg });
             }
           }
         );
@@ -267,8 +277,6 @@ exports.moderatorBoard = (req, res) => {
     //   filter[val] = user[val];
     // }
     // Volunteer.find(filter);
-
-
 
     // If User is Admin , Send All Data2
     if (user.level === 1) {

@@ -43,4 +43,6 @@ module.exports = function (app) {
   app.get("/values", publicController.getValues);
   // Get Services
   app.get("/services",publicController.getServices);
+  //Get Dynamic Page 
+  app.get("/page/:Id",publicController.getPage);
 };
