@@ -218,7 +218,7 @@ exports.apiUpdate = (req, res) => {
         return res
           .status(403)
           .send({ message: "YOU are not Allowed for this action" });
-      } else if (req.body.value >= user.level) {
+      } else if (req.body.value > user.level) {
         // console.log(req.body);
         Volunteer.findOneAndUpdate(
           { _id: req.body.id },
@@ -261,7 +261,16 @@ exports.moderatorBoard = (req, res) => {
     if (!user) {
       return res.status(403).send({ message: "No SUCH USER Exist" });
     }
-    // If User is Admin , Send All Data
+
+    // const filter = {}
+    // for (let val of filters) {
+    //   filter[val] = user[val];
+    // }
+    // Volunteer.find(filter);
+
+
+
+    // If User is Admin , Send All Data2
     if (user.level === 1) {
       Volunteer.find({})
         .select("-password")

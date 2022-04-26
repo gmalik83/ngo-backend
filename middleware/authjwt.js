@@ -2,11 +2,6 @@ const jwt = require('jsonwebtoken');
 const config = require('../config/auth.config');
 // const { volunteer } = require('../models/index');
 const db = require('../models/index');
-// const TempData = db.tempData;
-// const Blacklist = db.blacklist;
-// const Volunteer = db.volunteer;
-// const Role = db.role;
-
 verifyToken = (req, res, next) => {
   // console.log("Request Received to Verify JWT")
   let token = req.headers['x-access-token'];

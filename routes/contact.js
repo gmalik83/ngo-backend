@@ -26,7 +26,7 @@ routerContact.post(
       if (user) {
         return res
           .status(400)
-          .json({ error: "We have already received your Query" });
+          .json({ message: "We have already received your Query" });
       }
       user = await Contact.create({
         name: req.body.name,
@@ -42,3 +42,4 @@ routerContact.post(
   }
 );
 module.exports = routerContact;
+// Tested and Verified

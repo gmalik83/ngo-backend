@@ -42,7 +42,8 @@ exports.register = (req, res) => {
 
   newUser.save((err, user) => {
     if (err) {
-      res.status(500).send({ message: err });
+      res.status(500).send({ message: "Please Enter Valid Data" });
+     
       return;
     }
 
@@ -127,7 +128,7 @@ exports.login = (req, res) => {
         skill: user.skill,
         service: user.service,
         pincode: user.pincode,
-        mobile: req.body.mobile,
+        mobile: user.mobile,
         authorities:authorities,
         level : user.level,
         accessToken:token
