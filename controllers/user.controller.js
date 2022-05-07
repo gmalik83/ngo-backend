@@ -221,7 +221,7 @@ exports.apiUpdate = (req, res) => {
       } else if (req.body.value > user.level) {
         // console.log(req.body);
         Volunteer.findOneAndUpdate(
-          { _id: req.body.id },
+          { _id: req.body._id },
           { $set: { level: req.body.value, approved: true } },
           { new: true },
           (err, docs) => {
