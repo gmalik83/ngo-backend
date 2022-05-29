@@ -239,13 +239,185 @@ exports.apiUpdate = (req, res) => {
                 "Village_Coordinator",
               ];
               const msg = `User is Changed to ` + `${arr[docs.level]}`;
-              return res.status(200).send({ message:msg });
+              return res.status(200).send({ message: msg });
             }
           }
         );
       }
     });
 };
+// Search Form Data Controller
+exports.searchData = (req, res) => {
+  // Extract User Id and User Level from JWT
+  let token = req.headers["x-access-token"];
+  // No token Present
+  if (!token) {
+    return res.status(403).send({ message: "No Token Provided!" });
+  }
+
+  // Verify Token
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({ message: "Unauthorized!" });
+    }
+    req.userId = decoded.id;
+  });
+
+  let name1 = "",
+    mobile1 = "",
+    email1 = "",
+    village1 = "",
+    block1 = "",
+    tehsil1 = "",
+    district1 = "",
+    state1 = "",
+    country1 = "";
+  if (req.body.name) name1 = req.body.name;
+  if (req.body.mobile) mobile1 = req.body.mobile;
+  if (req.body.email) email1 = req.body.email;
+  if (req.body.village) village1 = req.body.village;
+  if (req.body.block) block1 = req.body.block;
+  if (req.body.tehsil) tehsil1 = req.body.tehsil;
+  if (req.body.district) district1 = req.body.district;
+  if (req.body.state) state1 = req.body.state;
+  if (req.body.country) country1 = req.body.country;
+
+  console.log(name1);
+  console.log(mobile1);
+  // Use Filter and Level Also
+
+  Volunteer.findById(req.userId).exec((err, user) => {
+    if (err) {
+      return res.status(401).send({ message: "NOT POSSIBLE" });
+    }
+    if (!user) {
+      return res.status(403).send({ message: "No SUCH USER Exist" });
+    }
+
+    // If User is Admin , Send All Data2
+    if (user.level === 1) {
+      Volunteer.find({
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: village1,
+        block: block1,
+        tehsil: tehsil1,
+        district: district1,
+        state: state1,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of Volunteer
+          res.send(userA);
+        });
+    }
+    // If User if State_Coordinator . Send Data With Matching State
+    else if (user.level === 2) {
+      Volunteer.find({
+        state: user.state,
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: village1,
+        block: block1,
+        tehsil: tehsil1,
+        district: district1,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of
+          res.send(userA);
+        });
+    }
+    // If User is District Coordinator , Send Data with Matching District
+    else if (user.level === 3) {
+      Volunteer.find({
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: village1,
+        block: block1,
+        tehsil: tehsil1,
+        state: user.state,
+        district: user.district,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of TempData
+          res.send(userA);
+        });
+    }
+    // If User is Tehsil Coordinator . Send Only Tehsil Data
+    else if (user.level === 4) {
+      Volunteer.find({
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: village1,
+        block: block1,
+        tehsil: user.tehsil,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of TempData
+          res.send(userA);
+        });
+    }
+    // Block Coordinator .     Send Only Block Data
+    else if (user.level === 5) {
+      Volunteer.find({
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: village1,
+        block: user.block,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of TempData
+          res.send(userA);
+        });
+    }
+    // Send Only Village Data
+    else if (user.level === 6) {
+      Volunteer.find({
+        firstName: name1,
+        mobile: mobile1,
+        email: email1,
+        village: user.village,
+      })
+        .select("-password")
+        .exec((err, userA) => {
+          if (err) {
+            res.status(401).send({ message: err });
+          }
+          // send array of all documents of TempData
+          res.send(userA);
+        });
+    } else {
+      res
+        .status(404)
+        .send({ message: "NOT FOUND.SOMETHING IS WRONG WITH YOU." });
+    }
+  });
+};
+
 exports.moderatorBoard = (req, res) => {
   // User ID
   // Return Data according to User Level . Find User Level from JWT

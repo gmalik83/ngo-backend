@@ -22,6 +22,9 @@ module.exports = function (app) {
   app.get("/api/test/mod", [authJwt.verifyToken], controller.moderatorBoard);
   // POST approving user =>  Volunteer : Level : 0 , approved : true
 
+  // Search Form Data
+  app.post("/searchData",[authJwt.verifyToken],controller.searchData);
+
   app.post("/api/approve", [authJwt.verifyToken], controller.approveUser);
 
   // POST delete User => Some unique data to Blacklist and then Delete from Volunteer
